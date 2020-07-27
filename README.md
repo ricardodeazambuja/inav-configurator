@@ -139,3 +139,43 @@ We accept clean and reasonable patches, submit them!
 
 ctn - primary author and maintainer of Baseflight Configurator.
 Hydra - author and maintainer of Cleanflight Configurator from which this project was forked.
+
+
+
+# Extra Notes for CogniFly
+This branch uses an old engine so it's possible to use [socat](https://medium.com/@copyconstruct/socat-29453e9fc8a6).
+
+You must install node.js version 10
+## Using Ubuntu
+```
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+Now:
+```
+npm install yarn # to install yarn locally (without -g!!!!)
+npm install # I'm not sure if the line above is necessary...
+```
+In order to generate an executable:
+```
+./node_modules/.bin/yarn gulp apps
+```
+
+After all these steps, launch it by typing:
+```
+./apps/inav-configurator/linux64/inav-configurator
+```
+
+If you just wanted to use it connected by the serial it would be easier to just download one of the official releases :)
+
+On the RPI (considering it's connected to the flight controller through its serial port):
+```
+socat -v -x tcp-l:54321,reuseaddr,fork /dev/ttyS0,b115200,cs8,parenb=0,cstopb=0,clocal=0,raw,echo=0,setlk,flock-ex-nb,nonblock=1
+```
+
+On the PC:
+```
+socat -v -x pty,link=$HOME/serial,waitslave tcp:cognipi-carbon.local:54321
+```
+
+If everything went as expected, you can launch the inav-configurator and select "manual" and set your_home_user_dir_path/serial and it will connected without the need of an USB cable :D
